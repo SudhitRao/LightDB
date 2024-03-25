@@ -1,6 +1,7 @@
 package ed.inf.adbs.lightdb;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.jsqlparser.expression.Expression;
 
@@ -11,14 +12,14 @@ public class JoinOperator extends Operator {
 
     private Tuple leftTuple;
 
-    private Expression whereCondition;
+    private List<Expression> whereConditions;
 
 
-    public JoinOperator(Operator leftChild, Operator rightChild, Expression whereCondition) {
+    public JoinOperator(Operator leftChild, Operator rightChild, List<Expression> whereConditions) {
         tupleSchema = new ArrayList<>();
         this.leftChild = leftChild;
         this.rightChild = rightChild;
-        this.whereCondition = whereCondition;
+        this.whereConditions = whereConditions;
         leftTuple = null;
         for (String s : leftChild.tupleSchema) {
             tupleSchema.add(s);
@@ -37,14 +38,19 @@ public class JoinOperator extends Operator {
         while (leftTuple != null) {
             Tuple rightTuple;
             while ((rightTuple = rightChild.getNextTuple()) != null) {
-                if (whereCondition == null) {
+                if (whereConditions.size() == 0) {
                     Tuple toReturn = Tuple.merge(leftTuple, rightTuple);
                     return toReturn;
                 } else {
                     TupleExpressionEvaluator evaluator = new TupleExpressionEvaluator(leftTuple, 
                     rightTuple, leftChild.tupleSchema, rightChild.tupleSchema);
-                    whereCondition.accept(evaluator);
-                    if (evaluator.getResult()) {
+                    boolean accept = true;
+                    for (int i = 0; i < whereConditions.size(); i++) {
+                        if (whereConditions.get(i) == null) continue;
+                        whereConditions.get(i).accept(evaluator);
+                        if (!evaluator.getResult()) accept = false;
+                    }
+                    if (accept) {
                         return Tuple.merge(leftTuple, rightTuple);
                     }
                 }

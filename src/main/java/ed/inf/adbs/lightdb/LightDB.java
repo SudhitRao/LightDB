@@ -217,10 +217,10 @@ public class LightDB {
 				System.out.println(joins);
 				ScanOperator scan1 = new ScanOperator("Sailors", "Sailors");
 				ScanOperator scan2 = new ScanOperator("Reserves", "Reserves");
-				JoinOperator root = new JoinOperator(scan1, scan2, select.getWhere());
+				//JoinOperator root = new JoinOperator(scan1, scan2, select.getWhere());
 				//scan1.dump();
 				//scan2.dump();
-				root.dump();
+				//root.dump();
 			}
 		} catch (Exception e) {
 			System.err.println("Exception occurred during parsing");

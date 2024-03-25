@@ -166,7 +166,7 @@ public class QueryPlanBuilder {
             String first = tableNames.get(0);
             String second = tableNames.get(1);
             Operator root = new JoinOperator(opMap.get(first), 
-                opMap.get(second), joinConditions.get(first + "_" + second).get(0));
+                opMap.get(second), joinConditions.get(first + "_" + second));
             for (int i = 2; i < tableNames.size(); i++) {
                 String firstTable = "";
                 String secondTable = tableNames.get(i);
@@ -174,7 +174,7 @@ public class QueryPlanBuilder {
                     firstTable = tableNames.get(j);
                     if (joinConditions.containsKey(firstTable + "_" + secondTable)) {
                         root = new JoinOperator(root, opMap.get(secondTable), 
-                            joinConditions.get(firstTable + "_" + secondTable).get(0));
+                            joinConditions.get(firstTable + "_" + secondTable));
                     }
                 }
             }
