@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+//Abstract operator class that describes the required methods reset and getNextTuple
 
 public abstract class Operator {
 
@@ -14,6 +15,10 @@ public abstract class Operator {
 
     public abstract void reset();
 
+
+    /*
+     * Calls next tuple until not possible anymore and prints to standard out
+     */
     public void dump() {
         reset(); 
         // System.out.println("starting");
@@ -24,7 +29,10 @@ public abstract class Operator {
             tuple = getNextTuple();
         }
     }
-
+    /*
+     * Calls next tuple until null and prints to filename
+     * @param filename file to print out to
+     */
     public void dump(String filename) {
         reset();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {

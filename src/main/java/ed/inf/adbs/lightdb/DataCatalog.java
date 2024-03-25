@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// Data catalog class to hold informatin about the different tables and the schema and file locations
+
 public class DataCatalog {
 
     private static DataCatalog instance;
@@ -18,7 +20,10 @@ public class DataCatalog {
     private Map<String, String> pathMap;
 
 
-
+    /*
+     * Constructor
+     * @param dataDir path to data directory
+     */
     public DataCatalog(String dataDir) {
 
         BufferedReader reader = null;
@@ -54,7 +59,11 @@ public class DataCatalog {
             }
         }
     }
-    
+
+    /*
+     * Initialize using constructor
+     * @param dirString path to data directory
+     */
     public static void initialize(String dirString) {
         if (instance == null) {
             instance = new DataCatalog(dirString);
@@ -63,6 +72,11 @@ public class DataCatalog {
         }
     }
 
+
+    /*
+     * get the singleton instance
+     * @return returns the instance
+     */
     public static DataCatalog getInstance() {
         if (instance == null) {
             throw new IllegalStateException("Instance has not been initialized");
@@ -71,22 +85,38 @@ public class DataCatalog {
         }
     }
     
-    // get schema for table 
+    /*
+     * get schema for table
+     * @param table name of table
+     * @return list of table names
+     */
     public ArrayList<String> getSchema(String table) {
         return schemaMap.get(table);
     }
 
+    /*
+     * get table names
+     * @return list of table names
+     */
     public ArrayList<String> getTableList() {
         return tableList;
     }
 
-    // get the filepath to the csv containing the values of table
+    /*
+     * get the filepath to the csv containing the values of table
+     * @return get filepath of table
+     */
     public String getPath(String table) {
         return pathMap.get(table);
     }
 
+    /*
+     * get column index
+     * @param table tbale name
+     * @param column column name
+     * @return index in csv file
+     */
     public int getColumnIndex(String table, String column) {
-        //System.out.println(schemaMap.get(table));
         return schemaMap.get(table).indexOf(column);
     }
     

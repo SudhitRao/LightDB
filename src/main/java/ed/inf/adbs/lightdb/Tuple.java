@@ -2,10 +2,18 @@ package ed.inf.adbs.lightdb;
 
 import java.util.ArrayList;
 
+
+/*
+ * Tuple class. Essentially just a wrapper for arraylist .
+ */
 public class Tuple {
     private ArrayList<Integer> fields;
     private int len;
 
+    /*
+     * Create a new tuple using argument
+     * @param param string array of integers
+     */
     public Tuple(String[] param) {
         this.len = param.length;
         fields = new ArrayList<>();
@@ -15,11 +23,20 @@ public class Tuple {
         }
     }
 
+    /*
+     * Create tuple using arraylist
+     * @param param arraylist to use
+     */
     public Tuple(ArrayList<Integer> param) {
         this.len = param.size();
         this.fields = param;
     }
-    
+
+    /*
+     * Merge two tuple and create another tuple in another object
+     * @param og first tuple
+     * @param other second tuple to merge on the right
+     */
     public static Tuple merge(Tuple og, Tuple other) {
         ArrayList<Integer> arr = new ArrayList<>();
         for (int i = 0; i < og.getLength(); i++) {

@@ -16,10 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * Processing the where expression to extract the join conditions
+ * and select conditions respectively
+ */
+
 public class ProcessWhereExpression extends ExpressionDeParser {
     private Map<String, List<Expression>> joinConditions = new HashMap<>();
     private Map<String, List<Expression>> selectionConditions = new HashMap<>();
 
+    /*
+     * process the comparison between the left and right expression given some comparison operator
+     * @param left left expression
+     * @param rigth right expression
+     * @param op comparison operator
+     */
     private void processComparison(Expression left, Expression right, ComparisonOperator op) {
         
         Column leftColumn = null;
@@ -92,10 +103,17 @@ public class ProcessWhereExpression extends ExpressionDeParser {
         selectionConditions.get(tableName).add(condition);
     }
 
+    /*
+     * Return the join conditions, if table S and T have to be joined by expression
+     * w and u, then we map[S_T] = [w, u].  
+     */
     public Map<String, List<Expression>> getJoinConditions() {
         return joinConditions;
     }
-
+    /*
+     * Return the join conditions, if table S has some selection conditions
+     * w and u, then we map[S] = [w, u].
+     */
     public Map<String, List<Expression>> getSelectionConditions() {
         return selectionConditions;
     }

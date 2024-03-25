@@ -1,6 +1,5 @@
 package ed.inf.adbs.lightdb;
 
-
 import java.util.ArrayList;
 
 import net.sf.jsqlparser.expression.Expression;;
@@ -10,6 +9,11 @@ public class SelectOperator extends Operator {
     private Operator child;
     private Expression whereCondition;
 
+    /*
+     * constructor to create a selection operator
+     * @param childOperator child of selection operator
+     * @param whereCondition Expression to evaluate selection on incoming tuples
+     */
     public SelectOperator(Operator childOperator, Expression whereCondition) {
         tupleSchema = new ArrayList<>();
         this.child = childOperator;
@@ -19,6 +23,10 @@ public class SelectOperator extends Operator {
         }
     }
 
+    /*
+     * get the next tuple only if it satisfies the selection condition
+     * @return next tuple
+     */
     @Override
     public Tuple getNextTuple() {
         Tuple tuple;
@@ -32,6 +40,9 @@ public class SelectOperator extends Operator {
         return null;
     }
 
+    /*
+     * reset the operator
+     */
     @Override
     public void reset() {
        child.reset();

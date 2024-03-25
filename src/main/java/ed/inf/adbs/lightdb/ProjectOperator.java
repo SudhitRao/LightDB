@@ -7,11 +7,20 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.SelectItem;
 
+/*
+ * Projection operator. Simply finds the indexes to keep and returns them when sending the next tuple 
+ * to the parent or output. 
+ */
 public class ProjectOperator extends Operator {
 
     private Operator child;
     private int[] indexes;
 
+    /*
+     * Constructor. Finds all indexes in the tuple to include and which ones to eliminate
+     * @param child child operator
+     * @param cols list of columns to project
+     */
     public ProjectOperator(Operator child, List<SelectItem<?>> cols) {
         tupleSchema = new ArrayList<>();
         this.child = child;
@@ -33,6 +42,11 @@ public class ProjectOperator extends Operator {
         }
     }
 
+    /*
+     * Constructor. Finds all indexes in the tuple to include and which ones to eliminate
+     * @param child child operator
+     * @param cols list of columns to project
+     */
     public ProjectOperator(Operator child, List<String> cols, boolean tmp) {
         tupleSchema = new ArrayList<>();
         this.child = child;
@@ -46,6 +60,11 @@ public class ProjectOperator extends Operator {
         
     }
 
+
+    /*
+     * get the next tuple
+     * @return the next tuple to return after joining and merging the left and right child
+     */
     @Override
     public Tuple getNextTuple() {
         Tuple tup = child.getNextTuple();
@@ -59,6 +78,9 @@ public class ProjectOperator extends Operator {
         return null;        
     }
 
+    /*
+     * reset the operator.
+     */
     @Override
     public void reset() {
         child.reset();

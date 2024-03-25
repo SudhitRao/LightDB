@@ -13,6 +13,11 @@ public class SortOperator extends Operator {
 
     private int index = 0;
 
+    /*
+     * Constructor. Call getnexttuple on the child operator and store it in buffer. Then sort. 
+     * @param child child operator of sort
+     * @param orderList elements to orderby in order
+     */
     public SortOperator(Operator child, List<OrderByElement> orderList) {
         tupleSchema = (ArrayList<String>) child.tupleSchema.clone();
         int[] indexes = new int[orderList.size()];
@@ -27,14 +32,21 @@ public class SortOperator extends Operator {
         Collections.sort(buffer, tupleCompare);
     }
 
+    /*
+     * get the next tuple from the buffer
+     * @return next tuple
+     */
     @Override
     public Tuple getNextTuple() {
         if (index >= buffer.size()) {
             return null;
         }
         return buffer.get(index++);
-    }
+    }  
 
+    /*
+     * reset the operator (just index = 0)
+     */
     @Override
     public void reset() {
         index = 0;

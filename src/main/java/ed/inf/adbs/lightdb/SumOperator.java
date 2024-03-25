@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+
+/*
+ * Group By operator. Group by operator constructor. Hashing based approach. Get all the tuples, and hash
+     * relevant grouped columns onto a map, and conduct aggregate when a group is seen again.
+ */
 public class SumOperator extends Operator {
 
     private Operator child;
@@ -16,7 +21,15 @@ public class SumOperator extends Operator {
 
     private int index = 0;
 
-
+    /*
+     * Group by operator constructor. Hashing based approach. Get all the tuples, and hash
+     * relevant grouped columns onto a map, and conduct aggregate when a group is seen again. 
+     * @param child child operator to get tuples from
+     * @param groupByColumns columns that need to be grouped
+     * @param productColumns if there is a SUM() function, then find these are the columnds that must be 
+     * multiplied inside the sum condition
+     * @param sumName name of the "SUM()" expression for use in tuple Schema
+     */
     public SumOperator(Operator child, List<String> groupByColumns, List<String> productColumns, String sumName) {
         this.child = child;
         Tuple curr;
@@ -91,6 +104,10 @@ public class SumOperator extends Operator {
         //System.out.println(tupleSchema);
     }
 
+    /*
+     * get the next tuple from the buffer
+     * @return next tuple
+     */
     @Override
     public Tuple getNextTuple() {
         if (index >= buffer.size()) {
@@ -100,6 +117,9 @@ public class SumOperator extends Operator {
 
     }
 
+    /*
+     * reset the operator
+     */
     @Override
     public void reset() {
         index = 0;

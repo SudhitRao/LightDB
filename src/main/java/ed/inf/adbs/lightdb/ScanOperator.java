@@ -6,6 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/*
+ * ScanOperator class. Simply takes in the table and returns the next tuple on by one by reading the file. 
+ */
+
 public class ScanOperator extends Operator {
     private DataCatalog catalog;
     private BufferedReader reader;
@@ -13,7 +17,11 @@ public class ScanOperator extends Operator {
     private String table;
 
 
-
+    /*
+     * Constructor, creates a scan operator for a table
+     * @param table table name
+     * @param alias alias/table name if no alias
+     */
     public ScanOperator(String table, String alias) {
         tupleSchema = new ArrayList<>();
         this.catalog = DataCatalog.getInstance();
@@ -29,6 +37,11 @@ public class ScanOperator extends Operator {
         }
         
     }
+
+    /*
+     * get the next tuple
+     * @return next tuple
+     */
     @Override
     public Tuple getNextTuple() {
         try {
@@ -50,6 +63,9 @@ public class ScanOperator extends Operator {
         }
     }
 
+    /*
+     * reset the operator
+     */
     @Override
     public void reset() {
         try {

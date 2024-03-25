@@ -12,12 +12,23 @@ import java.util.Map;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 
+/*
+ * Class to build a query plan from a given parsed SQL statement. The strategy to extract join
+ * conditions and create the join tree and build the query is explained in the README file. 
+ */
+
 public class QueryPlanBuilder {
 
     private PlainSelect statement;
 
     public static Map<String, String> aliasMap = new HashMap<>();
 
+
+    /*
+     * build a query plan for a given statement
+     * @param statement The parsed SQL query in a statement object
+     * @return the root operator to finally execute
+     */
     public Operator buildQueryPlan(Statement statement) throws Exception {
         //Statement statement = CCJSqlParserUtil.parse(sql);
         if (statement instanceof Select) {
@@ -32,6 +43,11 @@ public class QueryPlanBuilder {
         throw new IllegalArgumentException("Query type must be Select");
     }
 
+    /*
+     * given an operator, conduct projection if necessary
+     * @param root operator to handle
+     * @return the operator after projection has been applied
+     */
     private Operator processProjectOperator(Operator root) {
         List<SelectItem<?>> arr = statement.getSelectItems(); //guaranteed to be length at least 1 I think
         if (arr.size() == 1 && arr.get(0).getExpression().toString().equals("*")) {
@@ -52,6 +68,10 @@ public class QueryPlanBuilder {
         return new ProjectOperator(root, arr);
     }
 
+    /*
+     * Given an SQL query, extract all the tables and populate alias table
+     * @return list of tables as a string
+     */
     public List<String> extractTables() {
         List<String> tables = new ArrayList<>();
         tables.add(statement.getFromItem().toString());
@@ -81,6 +101,11 @@ public class QueryPlanBuilder {
         return toReturn;
     }
 
+    /*
+     * handle distinct operator if necessary
+     * @param root the operator to handle
+     * @return operator after distinct has been applied
+     */
     private Operator handleDistinct(Operator root) {
         if (statement.getDistinct() != null) {
             return new DuplicateEliminationOperator(root);
@@ -88,6 +113,11 @@ public class QueryPlanBuilder {
         return root;
     }
 
+    /*
+     * process groupby operator, find all the columns to groupby and create groupby op if necessary
+     * @param op child operator to handle
+     * @return operator with or without sum operator
+     */
     private Operator processSumOperator(Operator op) {
         List<SelectItem<?>> items = statement.getSelectItems();
         SelectItem<?> item = items.get(items.size() - 1);
@@ -122,6 +152,11 @@ public class QueryPlanBuilder {
         
     }
 
+    /*
+     * process sorting operator, do sorting if necessary
+     * @param op child operator of sort 
+     * @return operator with or without sorting operator
+     */
     private Operator processSortOperator(Operator op) {
         if (statement.getOrderByElements() != null) {
             return new SortOperator(op, statement.getOrderByElements());
@@ -129,6 +164,11 @@ public class QueryPlanBuilder {
         return op;
     }
 
+    /*
+     * modify the join conditions to include cross products by accessing the order of table names
+     * @param tableNames the table names in order in which they appear
+     * @param joinConditions join conditions to modify
+     */
     private void modifyJoinConditions(List<String> tableNames, Map<String, List<Expression>> joinConditions) {
         for (int i = 0; i < tableNames.size() - 1; i++) {
             if (!joinConditions.containsKey(tableNames.get(i) + "_" + tableNames.get(i + 1))) {
@@ -140,6 +180,11 @@ public class QueryPlanBuilder {
         }
     }
 
+    /*
+     * Given the statement, process all scan, selection, and join operators.
+     * All these done together since they are generally at the bottom of the tree
+     * @return operator at the root of left deep join tree
+     */
     private Operator processPlainSelectWithJoin() {
         List<String> tableNames = extractTables();
         ProcessWhereExpression processor = new ProcessWhereExpression();

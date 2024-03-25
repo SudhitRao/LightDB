@@ -5,6 +5,11 @@ import java.util.List;
 
 import net.sf.jsqlparser.expression.Expression;
 
+/*
+ * Join Operator implementation.
+ * Given the conditions to join with (or null) left and right child are joined. 
+ * Uses the simple nested loop algorithm to iterate through the left child and right child
+ */
 public class JoinOperator extends Operator {
 
     private Operator leftChild;
@@ -14,7 +19,12 @@ public class JoinOperator extends Operator {
 
     private List<Expression> whereConditions;
 
-
+    /*
+     * Constuctor
+     * @param leftChild left operator
+     * @param rightChild right operator
+     * @param whereConditions the conditions to join the left and right operator
+     */
     public JoinOperator(Operator leftChild, Operator rightChild, List<Expression> whereConditions) {
         tupleSchema = new ArrayList<>();
         this.leftChild = leftChild;
@@ -30,6 +40,10 @@ public class JoinOperator extends Operator {
 
     }
     
+    /*
+     * get the next tuple
+     * @return the next tuple to return after joining and merging the left and right child
+     */
     @Override
     public Tuple getNextTuple() {
         if (leftTuple == null) {
@@ -61,6 +75,10 @@ public class JoinOperator extends Operator {
         return null;
     }
 
+
+    /*
+     * reset the operator.
+     */
     @Override
     public void reset() {
         leftChild.reset();

@@ -2,13 +2,17 @@ package ed.inf.adbs.lightdb;
 
 import java.util.ArrayList;
 
-
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.util.deparser.ExpressionDeParser;
 
+/*
+ * Tuple Expression Evaluator visitor class. Siumply takes two tuples. 
+ * Given expression returns true or false if satisfies it or not. Or a single tuple if the
+ * expression is not a join condition. 
+ */
 public class TupleExpressionEvaluator extends ExpressionDeParser {
     private Tuple leftTuple;
     private Tuple rightTuple;
@@ -18,14 +22,24 @@ public class TupleExpressionEvaluator extends ExpressionDeParser {
     private ArrayList<String> leftSchema;
     private ArrayList<String> rightSchema;
 
-
+    /*
+     * Case where its just a selection condition, so only one tuple is provided
+     * @param leftTuple the singular tuple to be evaluated
+     * @param leftSchema the schema mapping of columns to tuple indices
+     */
     public TupleExpressionEvaluator(Tuple leftTuple, ArrayList<String> leftSchema) {
         this.leftTuple = leftTuple;
         this.rightTuple = null;
         this.leftSchema = leftSchema;
         this.rightSchema = null;
     }
-
+    /*
+     * Case where its a join condition, so two tuples are provided
+     * @param leftTuple the left tuple to be evaluated
+     * @param rightTuple the right tuple to be evaluated
+     * @param leftSchema the schema mapping of columns to tuple indices for left tuple
+     * @param rightSchema the schema mapping of columns to tuple indices for right tuple
+     */
     public TupleExpressionEvaluator(Tuple leftTuple,Tuple rightTuple, ArrayList<String> leftSchema, 
         ArrayList<String> rightSchema) {
             this.leftTuple = leftTuple;
@@ -120,8 +134,6 @@ public class TupleExpressionEvaluator extends ExpressionDeParser {
         andExpression.getRightExpression().accept(this);
         this.result = leftResult && this.result; // Combine with AND logic
     }
-
-    // Implement other visit methods as necessary, e.g., for Multiplication
 
     public boolean getResult() {
         return result;

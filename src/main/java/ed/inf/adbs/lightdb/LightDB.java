@@ -1,7 +1,5 @@
 package ed.inf.adbs.lightdb;
 
-
-
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +16,7 @@ import net.sf.jsqlparser.statement.select.*;
 
 /**
  * Lightweight in-memory database system
- *
+ * Everything other than queryExample is for my testing, thus will not be commented
  */
 public class LightDB {
 
